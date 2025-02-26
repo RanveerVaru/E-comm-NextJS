@@ -169,7 +169,7 @@ const Product = ({ items }) => {
             <label className="block mb-2 text-sm font-medium">Details:</label>
             <input
               type="text"
-              name="mobile"
+              name="otherDetails"
               value={userDetails.otherDetails}
               placeholder="eg: 2-pair of shoes,black-color"
               onChange={handleInputChange}
