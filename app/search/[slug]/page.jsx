@@ -7,8 +7,10 @@ const Page = ({ params }) => {
   const { slug } = React.use(params);
   const { products } = useProductContext();
   const items = products.filter((p) =>
-    p.title.toLowerCase().includes(slug.toLowerCase())
+    p.title.toLowerCase().includes(slug.toLowerCase()) ||
+    p.description.toLowerCase().includes(slug.toLowerCase())
   );
+  
 
   return (
     <div className="container mx-auto px-6 py-12 min-h-screen">

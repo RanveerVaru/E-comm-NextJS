@@ -15,13 +15,13 @@ const productSchema = new mongoose.Schema({
         required : true
     },
     imgSrc : {
-        type : String,
+        type : [String],
         required : true
     },
     category : {
         type : String,
         required : true
-    }
+    },
 }, {timestamps : true});
 
 const Product = mongoose.models.Product || mongoose.model("Product", productSchema);

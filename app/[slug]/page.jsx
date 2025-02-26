@@ -3,10 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useProductContext } from "../context/ProductContext";
 import Product from "../components/Product";
 import toast from "react-hot-toast";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
 
 const ProductDetailPage = ({ params }) => {
-  const { slug } = React.use(params);
-  const { products, addToCart, getCartItems } = useProductContext();
+  const { slug } = React.use(params)
+  const { products } = useProductContext();
 
   const [productById, setProductById] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -24,10 +28,10 @@ const ProductDetailPage = ({ params }) => {
         setRelatedProducts(related);
       }
     }
-  }, [slug, products]); // <-- Depend on slug & products to update correctly
+  }, [slug, products]);
 
-  const handleBuyNow = (itemName) => {
-    toast.success(`${itemName} purchased successfully 🎉`);
+  const handleBuyNow = () => {
+    toast.error(`Please purchase it from Home Page`);
   };
 
   if (!productById) {
@@ -38,15 +42,22 @@ const ProductDetailPage = ({ params }) => {
     <div className="container mx-auto mt-10 px-6 py-10">
       {/* Product Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        {/* Product Image */}
+        {/* 🔹 Image Slider using Swiper */}
         <div className="flex justify-center">
-          <img
-            src={productById.imgSrc}
-            alt={productById.title}
-            width={400}
-            height={400}
-            className="rounded-lg shadow-md object-cover"
-          />
+          <Swiper navigation={true} modules={[Navigation]} className="w-full max-w-md">
+            {productById.imgSrc.map((img, index) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={img}
+                  alt={`${productById.title} ${index}`}
+                  width={400}
+                  height={400}
+                  className="rounded-lg shadow-md object-cover w-full h-[400px]"
+                  loading="lazy"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
 
         {/* Product Info */}
@@ -57,24 +68,18 @@ const ProductDetailPage = ({ params }) => {
             {productById.category}
           </span>
 
-          {/* Price */}
-          <p className="text-2xl font-bold text-blue-600">${productById.price}</p>
-
           {/* Action Buttons */}
           <div className="flex gap-4 mt-4">
-            <button onClick={() => {handleBuyNow(productById.title)}} className="bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-transform duration-200 hover:scale-105">
+            <button
+              onClick={handleBuyNow}
+              className="bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-transform duration-200 hover:scale-105"
+            >
               Buy Now
             </button>
 
-            <button
-              onClick={() => {
-                addToCart(productById.title, productById.imgSrc, productById.price);
-                getCartItems();
-              }}
-              className="bg-green-500 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-green-600 transition-transform duration-200 hover:scale-105"
-            >
-              Add To Cart 🛒
-            </button>
+            <p className="bg-green-500 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-green-600 transition-transform duration-200 hover:scale-105">
+              ${productById.price}
+            </p>
           </div>
         </div>
       </div>

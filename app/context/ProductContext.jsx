@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -10,58 +9,79 @@ const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
-  const [data, setData] = useState([]);
-  const [cart, setCart] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
+  // Check if the user is logged in on initial load
   useEffect(() => {
-    getCartItems();
     fetchAllProducts();
+    const token = localStorage.getItem("userToken");
+    setIsLoggedIn(!!token);
   }, []);
 
+  // Login function
+  const login = (token) => {
+    localStorage.setItem("userToken", token);
+    setIsLoggedIn(true);
+  };
+
+  // Logout function
+  const logout = () => {
+    localStorage.removeItem("userToken");
+    setIsLoggedIn(false);
+  };
+
+  // Fetch all products
   const fetchAllProducts = async () => {
-    const api = await axios.get(`${API_BASE_URL}/products`);
-    if (api.data.success) {
-      setProducts(api.data.products);
-      setData(api.data.products);
+    try {
+      const api = await axios.get(`${API_BASE_URL}/products`);
+      if (api.data.success) {
+        setProducts(api.data.products);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      toast.error("Failed to fetch products");
     }
   };
 
-  const addToCart = async (title, imgSrc, price) => {
-    const api = await axios.post(`${API_BASE_URL}/cart`, {
-      title,
-      imgSrc,
-      price,
-    });
-    if (api.data.success) {
-      toast.success(api.data.message);
+  // Delete product with loading state
+  const deleteProduct = async (id) => {
+    if (!isLoggedIn) {
+      toast.error("You must be logged in to delete a product.");
+      return;
     }
-  };
 
-  const getCartItems = async () => {
-    const api = await axios.get(`${API_BASE_URL}/cart`);
-    if (api.data.success) {
-      setCart(api.data.cartItems);
-    }
-  };
+    if (loadingDelete) return;
 
-  const clearCart = async () => {
-    const api = await axios.delete(`${API_BASE_URL}/cart`);
-    if (api.data.success) {
-      toast.success(api.data.message);
-      getCartItems();
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    setLoadingDelete(true);
+    try {
+      const response = await axios.delete(`/api/products?id=${id}`);
+      if (response.data.success) {
+        toast.success("Product deleted successfully");
+        setProducts((prev) => prev.filter((p) => p._id !== id)); // Update UI without refetching
+      } else {
+        toast.error("Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("Failed to delete product");
     }
+    setLoadingDelete(false);
   };
 
   return (
     <ProductContext.Provider
       value={{
         products,
-        data,
-        setData,
-        addToCart,
-        cart,
-        getCartItems,
-        clearCart,
+        isLoggedIn,
+        login,
+        logout,
+        deleteProduct,
+        fetchAllProducts,
+        loadingDelete,
       }}
     >
       {children}
@@ -70,10 +90,5 @@ export const ProductProvider = ({ children }) => {
 };
 
 export const useProductContext = () => useContext(ProductContext);
-// ✅ useContext(ProductContext) allows any component to access the context without manually importing ProductContext.
-// ✅ Instead of writing: const { data } = useContext(ProductContext);
-// We can simply use:
-// const { data } = useProductContext();
-// ✔ Custom hooks make it easier to use context in components.
 
 export default ProductContext;
