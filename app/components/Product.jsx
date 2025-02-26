@@ -120,7 +120,7 @@ const Product = ({ items }) => {
                     Buy Now
                   </button>
                   <p className="w-2/5 flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-transform duration-200 hover:scale-105">
-                    ${product.price}
+                    ₹{product.price}
                   </p>
                 </div>
               </div>
