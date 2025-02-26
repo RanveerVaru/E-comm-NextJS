@@ -170,7 +170,7 @@ const Product = ({ items }) => {
             <input
               type="text"
               name="mobile"
-              value={userDetails.mobile}
+              value={userDetails.otherDetails}
               placeholder="eg: 2-pair of shoes,black-color"
               onChange={handleInputChange}
               className="w-full p-2 border rounded mb-3"
