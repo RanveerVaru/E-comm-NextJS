@@ -14,9 +14,15 @@ export const ProductProvider = ({ children }) => {
 
   // Check if the user is logged in on initial load
   useEffect(() => {
-    fetchAllProducts();
     const token = localStorage.getItem("userToken");
     setIsLoggedIn(!!token);
+  }, []);
+
+    // Auto-refresh every 5 seconds
+  useEffect(() => {
+    fetchAllProducts(); // Initial load
+    const interval = setInterval(fetchAllProducts, 10000); // Poll API every 10 seconds
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
   // Login function
