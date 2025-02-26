@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
   const ADMIN_EMAIL_PASS = process.env.ADMIN_EMAIL_PASS;
 
-  const { name, mobile, address, product , description } = req.body;
+  const { name, mobile, address, product , description,otherDetails } = req.body;
 
   const transporter = nodemailer.createTransport({
     service: "gmail", // You can use any SMTP provider
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       from: ADMIN_EMAIL,
       to: ADMIN_EMAIL, // Admin receives the email
       subject: "New Order Received",
-      text: `New order received:\n\nName: ${name}\nMobile: ${mobile}\nAddress: ${address}\nProduct: ${product} \nDescription: ${description}`,
+      text: `New order received:\n\nName: ${name}\nMobile: ${mobile}\nAddress: ${address}\nProduct: ${product} \nDescription: ${description} \nOtherDetails:${otherDetails}`,
     });
 
     return res.status(200).json({ success: true, message: "Order placed successfully" });
