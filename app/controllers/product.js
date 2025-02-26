@@ -77,13 +77,16 @@ export const createProduct = async (req) => {
 };
 
 // ✅ Function to Fetch Products
+// ✅ Function to Fetch Products (Most Recent First)
 export const getProducts = async () => {
-  const products = await Product.find({});
+  const products = await Product.find({}).sort({ createdAt: -1 }); // Sort by latest first
+
   return NextResponse.json(
     { success: true, message: "Products Fetched Successfully", products },
     { status: 200 }
   );
 };
+
 
 export const deleteProduct = async (req) => {
   try {
