@@ -61,7 +61,7 @@ export const ProductProvider = ({ children }) => {
       const response = await axios.delete(`/api/products?id=${id}`);
       if (response.data.success) {
         toast.success("Product deleted successfully");
-        setProducts((prev) => prev.filter((p) => p._id !== id)); // Update UI without refetching
+        fetchAllProducts();
       } else {
         toast.error("Failed to delete product");
       }
