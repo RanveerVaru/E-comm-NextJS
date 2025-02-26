@@ -18,6 +18,7 @@ const Product = ({ items }) => {
     name: "",
     mobile: "",
     address: "",
+    otherDetails :"",
   });
   const [loading, setLoading] = useState(false);
 
@@ -47,11 +48,12 @@ const Product = ({ items }) => {
         address: userDetails.address,
         product: selectedProduct.title,
         description: selectedProduct.description,
+        otherDetails : userDetails.otherDetails,
       });
 
       if (data.success) {
         toast.success("Order placed successfully!");
-        setUserDetails({ name: "", mobile: "", address: "" });
+        setUserDetails({ name: "", mobile: "", address: "", otherDetails :""});
         setIsModalOpen(false); // Close modal on success
       } else {
         toast.error("Failed to place order.");
@@ -138,6 +140,7 @@ const Product = ({ items }) => {
             <input
               type="text"
               name="name"
+              placeholder="eg: Ranveer Varu"
               value={userDetails.name}
               onChange={handleInputChange}
               className="w-full p-2 border rounded mb-3"
@@ -148,6 +151,7 @@ const Product = ({ items }) => {
               type="text"
               name="mobile"
               value={userDetails.mobile}
+              placeholder="eg: 8965789685"
               onChange={handleInputChange}
               className="w-full p-2 border rounded mb-3"
             />
@@ -157,6 +161,17 @@ const Product = ({ items }) => {
               type="text"
               name="address"
               value={userDetails.address}
+              placeholder="eg: kkv hall, Rajkot pincode-360001"
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded mb-3"
+            />
+
+            <label className="block mb-2 text-sm font-medium">Details:</label>
+            <input
+              type="text"
+              name="mobile"
+              value={userDetails.mobile}
+              placeholder="eg: 2-pair of shoes,black-color"
               onChange={handleInputChange}
               className="w-full p-2 border rounded mb-3"
             />
